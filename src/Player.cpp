@@ -1,8 +1,10 @@
 #include "Player.h"
 
-Player::Player(float x, float y) : velocity(0.f, 0.f), onGround(false) {
-	shape.setSize({40.f, 40.f});
-	shape.setFillColor(sf::Color::Green);
+Player::Player(float x, float y, sf::Vector2u winSize) 
+	: velocity(0.f, 0.f), onGround(false), windowSize(winSize)
+{
+	shape.setSize({30.f, 40.f});
+	shape.setFillColor(sf::Color::White);
 	shape.setPosition(x, y);
 
 }
@@ -22,6 +24,28 @@ void Player::applyGravity(float dt) {
 	velocity.y += 800.f * dt; // Gravity
 }
 
+void Player::setPosition(float x, float y) {
+	shape.setPosition(x, y);
+}
+
+float Player::getVelocityY() const {
+	return velocity.y;
+}
+sf::Vector2f Player::getPosition() const {
+	return shape.getPosition();
+}
+
+void Player::setOnGround(bool on, float groundY) {
+	if (on) {
+		velocity.y = 0.f;
+		shape.setPosition(shape.getPosition().x, groundY - shape.getSize().y);
+		onGround = true;
+	}
+	else {
+		onGround = false;
+	}
+}
+
 void Player::update(float dt) {
 	applyGravity(dt);
 	shape.move(velocity * dt);
@@ -32,9 +56,25 @@ void Player::update(float dt) {
 		velocity.y = 0.f;
 		onGround = true;
 	}
+
+	//Top Border
+	if (shape.getPosition().y < 0.f) {
+		shape.setPosition(shape.getPosition().x, 0.f);
+		velocity.y = 0;
+	}
+
+	//Left Border
+	if (shape.getPosition().x < 0.f) {
+		shape.setPosition(0.f, shape.getPosition().y);
+	}
+
+	//Right Border
+	if (shape.getPosition().x + shape.getSize().x > windowSize.x) {
+		shape.setPosition(windowSize.x - shape.getSize().x, shape.getPosition().y);
+	}
 }
 
-void Player::draw(sf::RenderWindow& window) {
+void Player::draw(sf::RenderWindow& window) const {
 	window.draw(shape);
 }
 

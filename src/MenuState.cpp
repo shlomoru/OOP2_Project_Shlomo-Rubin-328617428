@@ -4,12 +4,12 @@
 #include <iostream>
 
 MenuState::MenuState(Game* g) : game(g) {
-	if (!font.loadFromFile("arial.ttf")) {
+	if (!font.loadFromFile("resources/fonts/arialbd.ttf")) {
 		std::cerr << "Failed to load font\n";
 	}
 	text.setFont(font);
 	text.setString("Press Enter to Start");
-	text.setCharacterSize(30);
+	text.setCharacterSize(40);
 	text.setFillColor(sf::Color::White);
 	text.setPosition(200.f, 250.f);
 }
